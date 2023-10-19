@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.example.secondproject.model.Reservation" table="Reservation">
+        <id name="id" type="integer" >
+            <column name="ID"/>
+            <generator class="native"></generator>
+        </id>
+
+        <property column="Office" name="office" />
+        <property column="Owner" name="owner"/>
+        <property column="ClientType" name="clientType"/>
+        <property column="CreditType" name="creditType"/>
+        <property column="Date" name="date"/>
+        <property column="Name" name="name"/>
+        <property column="ContactName" name="contactName"/>
+        <property column="Email" name="email"/>
+        <property column="PhoneNo" name="phoneNo"/>
+
+        <!-- One-to-many relationship to Trips (a list of trips) -->
+        <list name="trips" table="Trips" inverse="true" cascade="all-delete-orphan">
+            <key column="ReservationId"  />
+            <index column="Position"/> <!-- The index column helps maintain the order in the list -->
+            <one-to-many class="com.example.secondproject.model.Trips"/>
+        </list>
+    </class>
+
+</hibernate-mapping>

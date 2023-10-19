@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="com.example.secondproject.model.Trips" table="Trips">
+        <id name="tripId" type="integer">
+            <column name="ID"/>
+            <generator class="native"></generator>
+        </id>
+        <property column="PassengerName" name="passengerName"/>
+        <property column="Departure" name="departure"/>
+        <property column="PickUpDate" name="pickUpDate"/>
+        <property column="NoOfPassenger" name="noOfPassenger"/>
+        <property column="Phone" name="phone"/>
+        <property column="Destination" name="destination"/>
+        <property column="Email" name="email"/>
+        <property column="PossibleStops" name="possibleStops"/>
+        <property column="EndDate" name="endDate"/>
+
+        <!-- Many-to-one relationship to Reservation -->
+        <many-to-one name="reservation" class="com.example.secondproject.model.Reservation"  fetch="select">
+            <column name="ReservationId" not-null="true"/>
+        </many-to-one>
+    </class>
+
+</hibernate-mapping>
