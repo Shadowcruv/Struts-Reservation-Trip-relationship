@@ -2,14 +2,22 @@ package com.example.secondproject.action;
 
 import com.example.secondproject.dao.HistoryDao;
 import com.example.secondproject.dao.ReservationDao;
+import com.example.secondproject.dao.TripsDao;
 import com.example.secondproject.model.History;
 import com.example.secondproject.model.Reservation;
 import com.example.secondproject.model.Trips;
 import com.opensymphony.xwork2.ActionSupport;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.struts2.ServletActionContext;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ReservationAction extends ActionSupport {
@@ -25,9 +33,52 @@ public class ReservationAction extends ActionSupport {
     private Integer reservationId;
 
 
+    public String submit = null;
+    public InputStream fileInputStream;
+    public String jasperPath = "";
+    public String pdfName = "";
+    public String rpt = "";
+
+
 
     public String execute(){
         return SUCCESS;
+    }
+
+    public String generateReport(){
+        try {
+            if(submit.equals("pdf")){
+                reservations = ReservationDao.getReservations();
+                jasperPath = ServletActionContext.getServletContext().getRealPath("/META-INF/Reports");
+                pdfName = "ReservationList";
+                rpt = "Reservationss.jrxml";
+                JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(reservations);
+                HashMap<String, Object> pm = new HashMap<String, Object>();
+                String logo = jasperPath + "/ws.jpg";
+//                pm.put("logo", logo);
+                JasperReport jr = JasperCompileManager.compileReport(jasperPath + "\\" + rpt);
+                JasperPrint jp = JasperFillManager.fillReport(jr,pm,beanCollectionDataSource);
+
+                // Create the output stream
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                // Export the report to a PDF and write it to the output stream
+                JasperExportManager.exportReportToPdfStream(jp, outputStream);
+
+                // Create an InputStream from the ByteArrayOutputStream
+                fileInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+                outputStream.flush();
+                outputStream.close();
+
+//                fileInputStream = new FileInputStream(new File(jasperPath + pdfName + ".pdf"));
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return "SUCCESS";
     }
 
     public String addHistories(){

@@ -10,6 +10,9 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sun.net.httpserver.Authenticator;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRXlsAbstractExporterParameter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import org.apache.struts2.ServletActionContext;
 
 import java.io.*;
@@ -42,8 +45,10 @@ public class TripAction extends ActionSupport {
 
     public String submit = null;
     public InputStream fileInputStream;
+    public InputStream excelInputStream;
     public String jasperPath = "";
     public String pdfName = "";
+    public String excelName = "";
     public String rpt = "";
 
 
@@ -56,8 +61,8 @@ public class TripAction extends ActionSupport {
             if(submit.equals("pdf")){
                 tripsList = TripsDao.getTrips();
                 jasperPath = ServletActionContext.getServletContext().getRealPath("/META-INF/Reports");
-                pdfName = "TripReservationReport";
-                rpt = "Tripss.jrxml";
+                pdfName = "TripReport";
+                rpt = "Trin.jrxml";
                 JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(tripsList);
                 HashMap<String, Object> pm = new HashMap<String, Object>();
                 String logo = jasperPath + "/ws.jpg";
@@ -86,6 +91,49 @@ public class TripAction extends ActionSupport {
 
         return "SUCCESS";
     }
+
+    public String generateExcelReport() {
+        try {
+            if (submit.equals("excel")) { // Assuming 'submit' is used to determine the format
+                tripsList = TripsDao.getTrips();
+                jasperPath = ServletActionContext.getServletContext().getRealPath("/META-INF/Reports");
+                excelName = "TripReport"; // Set the Excel file name
+                rpt = "Trin.jrxml";
+                JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(tripsList);
+                HashMap<String, Object> pm = new HashMap<String, Object>();
+                // Set other report parameters as needed
+                String logo = jasperPath + "/ws.jpg";
+                // pm.put("logo", logo);
+                JasperReport jr = JasperCompileManager.compileReport(jasperPath + "\\" + rpt);
+                JasperPrint jp = JasperFillManager.fillReport(jr, pm, beanCollectionDataSource);
+
+                // Create the output stream
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                // Export the report to Excel (XLS) and write it to the output stream
+                JRXlsxExporter exporter = new JRXlsxExporter();
+                exporter.setParameter(JRXlsExporterParameter.JASPER_PRINT, jp);
+                exporter.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, outputStream);
+                exporter.setParameter(JRXlsAbstractExporterParameter.IS_ONE_PAGE_PER_SHEET, Boolean.FALSE);
+                exporter.setParameter(JRXlsAbstractExporterParameter.IS_WHITE_PAGE_BACKGROUND, Boolean.FALSE);
+                exporter.setParameter(JRXlsAbstractExporterParameter.IS_COLLAPSE_ROW_SPAN, Boolean.TRUE);
+                exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS, Boolean.TRUE);
+                exporter.setParameter(JRXlsAbstractExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, Boolean.TRUE);
+                exporter.exportReport();
+
+                // Create an InputStream from the ByteArrayOutputStream
+                excelInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+                outputStream.flush();
+                outputStream.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "SUCCESS";
+    }
+
 
     public String getListTrips(){
        tripsList = TripsDao.getTrips();

@@ -71,6 +71,25 @@
             </result>
         </action>
 
+        <action name="Reservation-List" class="com.example.secondproject.action.ReservationAction" method="generateReport">
+            <result name="SUCCESS" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">fileInputStream</param>
+                <param name="contentType">attachment;filename="${pdfName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>
+
+        <action name="Reservation-ms" class="com.example.secondproject.action.TripAction" method="generateExcelReport">
+            <result name="SUCCESS" type="stream">
+                <param name="contentType">application/vnd.ms-excel</param>
+                <param name="inputName">excelInputStream</param>
+                <param name="contentDisposition">attachment;filename="${excelName}.xls"</param>
+                <param name="bufferSize">1024</param>
+            </result>
+        </action>
+
+
 
 
     </package>

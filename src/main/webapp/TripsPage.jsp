@@ -153,5 +153,15 @@
             <button type="submit" name="submit" value="pdf">Generate Report</button>
         </form>
 
+        <form method = "Post" name="rpt" action="Reservation-List">
+
+            <button type="submit" name="submit" value="pdf">Generate ReservationList-Report</button>
+        </form>
+
+        <form method = "Post" name="rpt" action="Reservation-ms">
+
+            <button type="submit" name="submit" value="excel">Generate ReservationList-XlsReport</button>
+        </form>
+
 </body>
 </html>
