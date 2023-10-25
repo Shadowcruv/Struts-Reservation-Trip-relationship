@@ -29,6 +29,8 @@
                 <s:textfield name="reservation.contactName" label="ContactName"></s:textfield>
                 <s:textfield name="reservation.email" label="email"></s:textfield>
                 <s:textfield name="reservation.phoneNo" label="PhoneNo"></s:textfield>
+                <s:textfield name="reservation.phoneNo" label="PhoneNo"></s:textfield>
+
                 <s:reset value="Reset" />
                 <s:submit value="submit" />
             </s:form>
@@ -60,6 +62,10 @@
                         <td>
                             <s:property value="#reservation.creditType"/><br/>
                         </td>
+<%--                       <s:iterator value="#reservation.trips" var="dfsxdx">--%>
+
+
+<%--                       </s:iterator>--%>
 
 <%--                        <td>--%>
 <%--                            <s:property value="#reservation.date"/><br/>--%>

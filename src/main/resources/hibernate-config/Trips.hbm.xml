@@ -5,7 +5,7 @@
 
 <hibernate-mapping>
     <class name="com.example.secondproject.model.Trips" table="Trips">
-        <id name="tripId" type="integer">
+        <id name="id" type="integer">
             <column name="ID"/>
             <generator class="native"></generator>
         </id>
@@ -20,7 +20,7 @@
         <property column="EndDate" name="endDate"/>
 
         <!-- Many-to-one relationship to Reservation -->
-        <many-to-one name="reservation" class="com.example.secondproject.model.Reservation"  fetch="select">
+        <many-to-one name="reservation" class="com.example.secondproject.model.Reservation" fetch="select" >
             <column name="ReservationId" not-null="true"/>
         </many-to-one>
     </class>

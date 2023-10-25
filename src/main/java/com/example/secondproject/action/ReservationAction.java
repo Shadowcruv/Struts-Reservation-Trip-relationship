@@ -36,7 +36,10 @@ public class ReservationAction extends ActionSupport {
     }
 
     public String save(){
-        ReservationDao.saveReservation(reservation);
+//       List<Trips> t = new ArrayList<>();
+//       t.add(trips);
+//       reservation.setTrips(t);
+       ReservationDao.saveReservation(reservation);
 
         history = new History();
         history.setHistories(addHistories());

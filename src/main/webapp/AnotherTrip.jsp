@@ -14,13 +14,14 @@
 <html>
 <head>
     <title>Trips</title>
+    <sx:head/>
 </head>
 <body>
 
 <h1>Add Another Trip</h1>
 
 
-<s:form action="add-trip" method="Post">
+<s:form action="add-another-trip" method="Post">
     <s:textfield name="trips.reservation.id" label="Reservation Id" readonly="true"></s:textfield>
     <s:radio name="trips.reservation.clientType" list="{'Individual','company'}" label=" Reservation ClientType" readonly="true" />
     <s:radio name="trips.reservation.creditType" list="{'Credit Client','Non Credit Client'}" label="Reservation CreditType" readonly="true" />
@@ -33,14 +34,13 @@
 
     <s:textfield name="trips.passengerName" label="PassengerName"></s:textfield>
     <s:textfield name="trips.departure" label="Departure"></s:textfield>
-<%--    <sx:datetimepicker name="trips.pickUpDate" label="PickUpDate" displayFormat="dd-MM-yyyy" />--%>
+    <sx:datetimepicker name="pickUpDate" label="PickUpDate" displayFormat="dd-MM-yyyy HH:mm" />
     <s:textfield name="trips.noOfPassenger" label= "NoOfPassenger"></s:textfield>
     <s:textfield name="trips.phone" label="Phone"></s:textfield>
     <s:textfield name="trips.email" label="Email"></s:textfield>
     <s:textfield name="trips.destination" label="Destination"></s:textfield>
     <s:textfield name="trips.possibleStops" label="PossibleStops"></s:textfield>
-
-<%--    <sx:datetimepicker name="trips.enddate" label="EndDate" displayFormat="dd-MM-yyyy" />--%>
+    <sx:datetimepicker name="endDate" label="EndDate" displayFormat="dd-MM-yyyy HH:mm" />
     <s:reset value="Reset" />
     <s:submit value="submit" />
 </s:form>

@@ -21,7 +21,7 @@
         <property column="PhoneNo" name="phoneNo"/>
 
         <!-- One-to-many relationship to Trips (a list of trips) -->
-        <list name="trips" table="Trips" inverse="true" cascade="all-delete-orphan">
+        <list name="trips" table="Trips" inverse="true" cascade="all-delete-orphan" >
             <key column="ReservationId"  />
             <index column="Position"/> <!-- The index column helps maintain the order in the list -->
             <one-to-many class="com.example.secondproject.model.Trips"/>

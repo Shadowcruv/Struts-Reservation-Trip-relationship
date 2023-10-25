@@ -11,19 +11,22 @@
 
 
 
+
 <html>
 <head>
     <title>Trips</title>
+<sx:head/>
 </head>
 <body>
 
 <h1>Insert Reservation</h1>
 
 
+
     <s:form action="add-trip" method="Post">
         <s:radio name="trips.reservation.clientType" list="{'Individual','company'}" label=" Reservation ClientType"/>
         <s:radio name="trips.reservation.creditType" list="{'Credit Client','Non Credit Client'}" label="Reservation CreditType"/>
-<%--        <sx:datetimepicker name="trips.reservation.date" label="Reservation Date" displayFormat="dd-MM-yyyy" />--%>
+        <sx:datetimepicker name="rdate" label="Reservation Date" displayFormat="dd-MM-yyyy HH:mm" />
         <s:textfield name="trips.reservation.name" label="Name"></s:textfield>
         <s:textfield name="trips.reservation.contactName" label="Reservation ContactName"></s:textfield>
         <s:textfield name="trips.reservation.email" label="Reservation email"></s:textfield>
@@ -32,14 +35,13 @@
 
         <s:textfield name="trips.passengerName" label="(TRIP)PassengerName"></s:textfield>
         <s:textfield name="trips.departure" label="(TRIP)Departure"></s:textfield>
-<%--        <sx:datetimepicker name="trips.pickUpDate" label="PickUpDate" displayFormat="dd-MM-yyyy" />--%>
+        <sx:datetimepicker name="pickUpDate" label="PickUpDate" displayFormat="dd-MM-yyyy HH:mm" />
         <s:textfield name="trips.noOfPassenger" label= "(TRIP)NoOfPassenger"></s:textfield>
         <s:textfield name="trips.phone" label="Phone"></s:textfield>
         <s:textfield name="trips.email" label="Email"></s:textfield>
         <s:textfield name="trips.destination" label="(TRIP)Destination"></s:textfield>
         <s:textfield name="trips.possibleStops" label="(TRIP)PossibleStops"></s:textfield>
-
-<%--        <sx:datetimepicker name="trips.enddate" label="EndDate" displayFormat="dd-MM-yyyy" />--%>
+        <sx:datetimepicker name="endDate" label="EndDate" displayFormat="dd-MM-yyyy HH:mm" />
         <s:reset value="Reset" />
         <s:submit value="submit" />
     </s:form>
@@ -47,9 +49,10 @@
 
         <table border="1" width="300">
             <tr>
+                <th>ID</th>
                 <th>PassengerName</th>
                 <th>Departure</th>
-<%--                <th>PickUpDate</th>--%>
+                <th>PickUpDate</th>
                 <th>NoOfPassengers</th>
                 <th>Phone</th>
                 <th>Email</th>
@@ -57,12 +60,17 @@
                 <th>PossibleStops</th>
                 <th>ReservationId</th>
                 <th>Name</th>
-<%--                <th>EndDate</th>--%>
+                <th>EndDate</th>
                 <th>Update</th>
-                <th>Delete</th>
+<%--                <th>Delete</th>--%>
+<%--                <th>Blank</th>--%>
             </tr>
             <s:iterator value="tripsList" var="trips">
                 <tr>
+                    <td>
+                        <s:property value="#trips.id"/><br/>
+                    </td>
+
                     <td>
                         <s:property value="#trips.passengerName"/><br/>
                     </td>
@@ -71,9 +79,9 @@
                         <s:property value="#trips.departure"/><br/>
                     </td>
 
-<%--                    <td>--%>
-<%--                        <s:property value="#trips.pickUpDate"/><br/>--%>
-<%--                    </td>--%>
+                    <td>
+                        <s:property value="#trips.pickUpDate"/><br/>
+                    </td>
 
                     <td>
                         <s:property value="#trips.noOfPassenger"/><br/>
@@ -106,19 +114,15 @@
 
 
                     <td>
-                        <s:property value="#trips.reservation.name"/><br/>
+                        <s:property value="#trips.endDate"/><br/>
                     </td>
 
-
-<%--                    <td>--%>
-<%--                        <s:property value="#trips.endDate"/><br/>--%>
-<%--                    </td>--%>
                     <td>
                         <a href="update-trips?tripId=<s:property value="#trips.tripId"/>&reservationId=<s:property value="#trips.reservation.id"/>">
                             <button class="actionBtn">Update</button>
                         </a>
-                    </td>
-                    <td>
+<%--                    </td>--%>
+<%--                    <td>--%>
                         <a href="delete-trips?tripId=<s:property value="#trips.tripId"/>&reservationId=<s:property value="#trips.reservation.id"/>">
                             <button class="actionBtn">Delete</button>
                         </a>
@@ -143,6 +147,11 @@
                 </tr>
             </s:iterator>
         </table>
+
+        <form method = "Post" name="rpt" action="ReservationReport">
+
+            <button type="submit" name="submit" value="pdf">Generate Report</button>
+        </form>
 
 </body>
 </html>

@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Trips {
 
-    private int tripId;
+    private int id;
     private String passengerName;
     private String departure;
     private String pickUpDate;
@@ -42,12 +42,12 @@ public class Trips {
         this.endDate = endDate;
     }
 
-    public int getTripId() {
-        return tripId;
+    public int getId() {
+        return id;
     }
 
-    public void setTripId(int tripId) {
-        this.tripId = tripId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPassengerName() {
@@ -63,7 +63,7 @@ public class Trips {
     }
 
     public void setDeparture(String departure) {
-        departure = departure;
+        this.departure = departure;
     }
 
     public String getPickUpDate() {

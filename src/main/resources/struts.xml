@@ -40,6 +40,11 @@
             <result name="success" >/AnotherTrip.jsp</result>
         </action>
 
+        <action name="add-another-trip" class="com.example.secondproject.action.TripAction" method="saveAnotherTrip">
+            <result name="success" >/AnotherTrip.jsp</result>
+        </action>
+
+
         <action name="update-trips" class="com.example.secondproject.action.TripAction">
             <result name="success">/UpdateTripsPage.jsp</result>
         </action>
@@ -55,6 +60,15 @@
         <action name="login" class="com.example.secondproject.action.LoginAction" method="execute">
             <result name="success">/ReservationsPage.jsp</result>
             <result name="input">/LoginPage.jsp</result>
+        </action>
+
+        <action name="ReservationReport" class="com.example.secondproject.action.TripAction" method="generateReport">
+            <result name="SUCCESS" type="stream">
+                <param name="contentType">application/pdf</param>
+                <param name="inputName">fileInputStream</param>
+                <param name="contentType">attachment;filename="${pdfName}"</param>
+                <param name="bufferSize">1024</param>
+            </result>
         </action>
 
 

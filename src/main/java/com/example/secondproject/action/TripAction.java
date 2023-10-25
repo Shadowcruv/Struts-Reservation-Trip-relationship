@@ -8,13 +8,28 @@ import com.example.secondproject.model.Reservation;
 import com.example.secondproject.model.Trips;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sun.net.httpserver.Authenticator;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.struts2.ServletActionContext;
 
+import java.io.*;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class TripAction extends ActionSupport {
 
     private Trips trips;
+
+    private Date rdate;
+
+    private Date pickUpDate;
+    private Date endDate;
+
+    private String theName;
 
     private Integer reservationId;
     private Integer tripId;
@@ -25,9 +40,51 @@ public class TripAction extends ActionSupport {
 
     private History history;
 
+    public String submit = null;
+    public InputStream fileInputStream;
+    public String jasperPath = "";
+    public String pdfName = "";
+    public String rpt = "";
+
 
     public String execute(){
         return SUCCESS;
+    }
+
+    public String generateReport(){
+        try {
+            if(submit.equals("pdf")){
+                tripsList = TripsDao.getTrips();
+                jasperPath = ServletActionContext.getServletContext().getRealPath("/META-INF/Reports");
+                pdfName = "TripReservationReport";
+                rpt = "Tripss.jrxml";
+                JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(tripsList);
+                HashMap<String, Object> pm = new HashMap<String, Object>();
+                String logo = jasperPath + "/ws.jpg";
+//                pm.put("logo", logo);
+                JasperReport jr = JasperCompileManager.compileReport(jasperPath + "\\" + rpt);
+                JasperPrint jp = JasperFillManager.fillReport(jr,pm,beanCollectionDataSource);
+
+                // Create the output stream
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+                // Export the report to a PDF and write it to the output stream
+                JasperExportManager.exportReportToPdfStream(jp, outputStream);
+
+                // Create an InputStream from the ByteArrayOutputStream
+                fileInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+                outputStream.flush();
+                outputStream.close();
+
+//                fileInputStream = new FileInputStream(new File(jasperPath + pdfName + ".pdf"));
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return "SUCCESS";
     }
 
     public String getListTrips(){
@@ -36,11 +93,46 @@ public class TripAction extends ActionSupport {
         return SUCCESS;
     }
     public String saveTrip(){
-        ReservationDao.saveReservation(trips.getReservation());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String createdDate = formatter.format(pickUpDate);
+        String theEndDate = formatter.format(endDate);
+        String rrdate = formatter.format(rdate);
+
+        Reservation reservation = trips.getReservation();
+        reservation.setDate(rrdate);
+        ReservationDao.saveReservation(reservation);
+
+        trips.setPickUpDate(createdDate);
+        trips.setEndDate(theEndDate);
+
+
         TripsDao.saveTrips(trips);
         history = new History();
         history.setNow(LocalDate.now());
         history.setHistories(addHistories());
+        HistoryDao.saveHistory(history);
+        return SUCCESS;
+
+    }
+
+    public String saveAnotherTrip(){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String createdDate = formatter.format(pickUpDate);
+        String theEndDate = formatter.format(endDate);
+
+
+//        Reservation reservation = trips.getReservation();
+//
+//       ReservationDao.saveReservation(reservation);
+
+        trips.setPickUpDate(createdDate);
+        trips.setEndDate(theEndDate);
+
+
+        TripsDao.saveTrips(trips);
+        history = new History();
+        history.setNow(LocalDate.now());
+        history.setHistories("Added a New Trip under reservation number :" + trips.getReservation().getId() );
         HistoryDao.saveHistory(history);
         return SUCCESS;
 
@@ -75,7 +167,14 @@ public class TripAction extends ActionSupport {
 //        trips1.getReservation().setClientType();
 
 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        String createdDate = formatter.format(pickUpDate);
+        String theEndDate = formatter.format(endDate);
 
+      //  reservation1.setName(theName);
+
+        trips1.setPickUpDate(createdDate);
+        trips1.setEndDate(theEndDate);
         trips1.setPassengerName(trips.getPassengerName());
         trips1.setDeparture(trips.getDeparture());
         trips1.setDestination(trips.getDestination());
@@ -87,6 +186,7 @@ public class TripAction extends ActionSupport {
         trips1.setPickUpDate(trips.getPickUpDate());
         trips1.setReservation(reservation1);
         //HistoryDao.saveHistory(history);
+       // ReservationDao.saveReservation(reservation1);
         TripsDao.updateTrips(trips1);
 
 
@@ -104,10 +204,10 @@ public class TripAction extends ActionSupport {
             tracker += "Changed Passenger Name to " + trips1.getPassengerName()+ " ";
         }
 
-//        if (trips1.getDeparture().equals(trips.getDeparture())) {
-//
-//            tracker +=  "Changed Departure to " + trips1.getDeparture();
-//        }
+        if (!(trips1.getDeparture().equals(trips.getDeparture()))) {
+
+            tracker +=  "Changed Departure to " + trips1.getDeparture();
+        }
 
         if (!(trips1.getPhone().equals(trips.getPhone()))) {
 
@@ -190,5 +290,77 @@ public class TripAction extends ActionSupport {
 
     public void setHistory(History history) {
         this.history = history;
+    }
+
+    public Date getPickUpDate() {
+        return pickUpDate;
+    }
+
+    public void setPickUpDate(Date pickUpDate) {
+        this.pickUpDate = pickUpDate;
+    }
+
+    public Date getRdate() {
+        return rdate;
+    }
+
+    public void setRdate(Date rdate) {
+        this.rdate = rdate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getTheName() {
+        return theName;
+    }
+
+    public void setTheName(String theName) {
+        this.theName = theName;
+    }
+
+    public String getSubmit() {
+        return submit;
+    }
+
+    public void setSubmit(String submit) {
+        this.submit = submit;
+    }
+
+    public InputStream getFileInputStream() {
+        return fileInputStream;
+    }
+
+    public void setFileInputStream(InputStream fileInputStream) {
+        this.fileInputStream = fileInputStream;
+    }
+
+    public String getJasperPath() {
+        return jasperPath;
+    }
+
+    public void setJasperPath(String jasperPath) {
+        this.jasperPath = jasperPath;
+    }
+
+    public String getPdfName() {
+        return pdfName;
+    }
+
+    public void setPdfName(String pdfName) {
+        this.pdfName = pdfName;
+    }
+
+    public String getRpt() {
+        return rpt;
+    }
+
+    public void setRpt(String rpt) {
+        this.rpt = rpt;
     }
 }
